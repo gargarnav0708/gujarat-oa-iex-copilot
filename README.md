@@ -1,4 +1,4 @@
-# ⚡ Gujarat Open Access (GERC) + IEX AI Bidding Co-Pilot
+#  Gujarat Open Access (GERC) + IEX AI Bidding Co-Pilot
 
 An AI-powered electricity market intelligence, price forecasting, and Open Access (OA) bidding & load-shifting simulator tailored for Commercial & Industrial (C&I) consumers in **Gujarat** (`DGVCL`, `PGVCL`, `UGVCL`, `MGVCL`, and `GETCO` EHV).
 
@@ -20,7 +20,7 @@ Built on top of the **[IEXInsiderMCP](https://github.com/divyeshBhartiya/IEXInsi
 
 ---
 
-## 📊 Headline Backtest Results (June–September 2025, 11,616 15-Min Blocks)
+## Headline Backtest Results (June–September 2025, 11,616 15-Min Blocks)
 
 For a **5 MW Industrial Plant in Gujarat** (`4 MW` fixed base load + `1 MW` flexible shiftable load, consuming `3.60 MU/month`) using the **Weather-Aware Multi-Quantile XGBoost Co-Pilot**:
 
@@ -36,7 +36,7 @@ For a **5 MW Industrial Plant in Gujarat** (`4 MW` fixed base load + `1 MW` flex
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 gujarat-oa-iex-copilot/
@@ -68,7 +68,7 @@ gujarat-oa-iex-copilot/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Install Dependencies
 
