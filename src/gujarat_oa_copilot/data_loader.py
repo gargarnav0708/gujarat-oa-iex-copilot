@@ -8,10 +8,14 @@ import os
 import pandas as pd
 
 
+_PACKAGE_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 DEFAULT_CSV_PATHS = [
-    os.path.join(os.getcwd(), "IEXInsiderMCP", "IEX_Market_Data.csv"),
+    os.path.join(_PACKAGE_ROOT, "data", "IEX_Market_Data.csv"),
+    os.path.join(_PACKAGE_ROOT, "IEXInsiderMCP", "IEX_Market_Data.csv"),
     os.path.join(os.getcwd(), "data", "IEX_Market_Data.csv"),
-    "/Users/herr_ag98/.gemini/antigravity/scratch/gujarat-oa-iex-copilot/IEXInsiderMCP/IEX_Market_Data.csv",
+    os.path.join(os.getcwd(), "IEXInsiderMCP", "IEX_Market_Data.csv"),
+    "/Users/herr_ag98/.gemini/antigravity/scratch/gujarat-oa-iex-copilot/data/IEX_Market_Data.csv",
 ]
 
 

@@ -84,10 +84,12 @@ pip install -e .
 python3 run_demo.py
 ```
 
-Or customize the consumer's load profile, backtest window, or demo day via CLI flags:
+Or run with **Walk-Forward `TimeSeriesSplit` (`gap=192` blocks / 48-hour embargo) + Early Stopping Hyperparameter Optimization (`--tune`)**:
 
 ```bash
 python3 run_demo.py \
+  --tune \
+  --tune-trials 10 \
   --base-load-mw 4.0 \
   --flex-load-mw 1.0 \
   --split-date 2025-06-01 \

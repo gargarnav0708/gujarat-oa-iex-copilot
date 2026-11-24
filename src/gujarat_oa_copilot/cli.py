@@ -53,6 +53,17 @@ def parse_args() -> argparse.Namespace:
         help="Skip live Open-Meteo API call and use cached CSV or Gujarat climatological model.",
     )
     parser.add_argument(
+        "--tune",
+        action="store_true",
+        help="Run walk-forward TimeSeriesSplit (48h embargo gap) hyperparameter tuning with early stopping.",
+    )
+    parser.add_argument(
+        "--tune-trials",
+        type=int,
+        default=10,
+        help="Number of walk-forward hyperparameter tuning trials when --tune is enabled (default: 10).",
+    )
+    parser.add_argument(
         "--output-dir",
         type=str,
         default="outputs",
@@ -90,15 +101,21 @@ def main() -> None:
     )
 
     print("\n[3/5] Training Weather-Aware Multi-Quantile XGBoost Forecasters (DAM P25/P50/P75 & RTM P50)...")
+    if args.tune:
+        print(f"      Running Walk-Forward TimeSeriesSplit (gap=192 blocks) Tuning ({args.tune_trials} trials)...")
     forecaster = IEXPriceForecaster()
-    test_df, ml_metrics = forecaster.fit_and_evaluate(df_all, split_date=args.split_date)
+    test_df, ml_metrics = forecaster.fit_and_evaluate(
+        df_all, split_date=args.split_date, tune=args.tune, n_trials=args.tune_trials
+    )
     print(
         f"      Backtest Window : {ml_metrics['test_start']} to {ml_metrics['test_end']} "
         f"({ml_metrics['test_blocks']:,} blocks | {ml_metrics['num_dam_features']} features)"
     )
+    print(f"      Active Params   : {ml_metrics['best_hyperparameters']}")
     print(
         f"      DAM MAE         : ₹{ml_metrics['dam_mae_rs_kwh']:.3f}/kWh | "
-        f"P75 Clearance Reliability: {ml_metrics['p75_clearance_reliability_pct']:.1f}%"
+        f"Pinball (P25/P50/P75): {ml_metrics['dam_pinball_p25']:.3f} / {ml_metrics['dam_pinball_p50']:.3f} / {ml_metrics['dam_pinball_p75']:.3f} | "
+        f"P75 Clearance: {ml_metrics['p75_clearance_reliability_pct']:.1f}%"
     )
     print(f"      RTM MAE         : ₹{ml_metrics['rtm_mae_rs_kwh']:.3f}/kWh")
 

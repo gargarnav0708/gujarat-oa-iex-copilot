@@ -11,6 +11,7 @@ import pandas as pd
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
 
 from gujarat_oa_copilot.config import ConsumerProfile, GERCConfig, OAMode
+from gujarat_oa_copilot.forecaster import IEXPriceForecaster
 from gujarat_oa_copilot.optimizer import GujaratOABiddingSimulator
 from gujarat_oa_copilot.weather import GujaratWeatherClient
 
@@ -86,6 +87,33 @@ class TestGERCConfigAndOptimizer(unittest.TestCase):
         self.assertTrue(np.all(sim_df["Rate_S2_AI"] <= sim_df["DISCOM_Rate"] + 1e-6))
         self.assertGreater(summary["savings_pct_ai_shift"], summary["savings_pct_ai"])
         self.assertGreater(summary["savings_pct_ai"], 0.0)
+
+    def test_tune_hyperparameters_walk_forward(self) -> None:
+        rng = np.random.default_rng(7)
+        n_rows = 240
+        train_df = pd.DataFrame(
+            {
+                "f1": rng.normal(0, 1, size=n_rows),
+                "f2": rng.uniform(0, 10, size=n_rows),
+                "DAM_MCP": rng.uniform(1.5, 6.0, size=n_rows),
+            }
+        )
+        forecaster = IEXPriceForecaster()
+        best_params, best_loss = forecaster.tune_hyperparameters(
+            train_df,
+            feature_cols=["f1", "f2"],
+            target_col="DAM_MCP",
+            alpha=0.50,
+            n_trials=3,
+            n_splits=2,
+            embargo_blocks=10,
+            verbose=False,
+        )
+        self.assertIn("max_depth", best_params)
+        self.assertIn("learning_rate", best_params)
+        self.assertIn("n_estimators", best_params)
+        self.assertGreater(best_loss, 0.0)
+        self.assertEqual(len(forecaster.tuning_history), 3)
 
 
 if __name__ == "__main__":
